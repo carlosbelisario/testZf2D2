@@ -4,9 +4,11 @@ namespace Album\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController,
     Zend\View\Model\ViewModel, 
+    Zend\Form\Annotation\AnnotationBuilder,
     Album\Form\AlbumForm,
     Doctrine\ORM\EntityManager,
-    Album\Entity\Album;
+    Album\Entity\Album,    
+    Album\Entity\AlbumMetadata;
 
 class AlbumController extends AbstractActionController
 {
@@ -42,10 +44,9 @@ class AlbumController extends AbstractActionController
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $album = new Album();
-            
-            $form->setInputFilter($album->getInputFilter());
-            $form->setData($request->post());
+            $album = new Album();            
+            $form->setInputFilter($album->getInputFilter());                        
+            $form->setData($request->getPost());
             if ($form->isValid()) { 
                 $album->populate($form->getData()); 
                 $this->getEntityManager()->persist($album);
@@ -59,6 +60,35 @@ class AlbumController extends AbstractActionController
         return array('form' => $form);
     }
 
+    public function addMetadataAction()
+    {
+        $builder = new AnnotationBuilder();
+        $entity = new AlbumMetadata();
+        $form = $builder->createForm($entity);
+        //add submit button
+        $form->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type' => 'submit',                
+                'value' => 'Go',
+                'id' => 'submitbutton'
+            )            
+        ));
+        $form->bind($entity);
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $form->setData($request->getPost());
+            if ($form->isValid()) { 
+                $album->populate($form->getData()); 
+                $this->getEntityManager()->persist($album);
+                $this->getEntityManager()->flush();
+
+                // Redirect to list of albums
+                return $this->redirect()->toRoute('album'); 
+            }            
+        }
+        return array('form' => $form);
+    }
     public function editAction()
     {
         $id = (int)$this->getEvent()->getRouteMatch()->getParam('id');

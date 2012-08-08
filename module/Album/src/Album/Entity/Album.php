@@ -87,6 +87,11 @@ class Album implements InputFilterAwareInterface
         throw new \Exception("Not used");
     }
 
+    /**
+    *
+    * getInputFilter validator
+    * @return InputFilter
+    */    
     public function getInputFilter()
     {
         if (!$this->inputFilter) {
