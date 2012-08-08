@@ -1,4 +1,7 @@
 <?php
+
+namespace Album;
+
 return array(
     'controllers' => array(
         'invokables' => array(
@@ -29,5 +32,26 @@ return array(
         'template_path_stack' => array(
             'album' => __DIR__ . '/../view',
         ),
+    ),
+    
+    'doctrine' => array(
+        'driver' => array(
+            'my_annotation_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(__DIR__ . '/../src/Album/Entity')
+            ),
+            'Album' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(__DIR__ . '/../src/Album/Entity')
+            ),
+           
+            'orm_default' => array(
+                'drivers' => array(
+                    'Album' => 'my_annotation_driver'
+                )
+            )
+        )
     ),
 );

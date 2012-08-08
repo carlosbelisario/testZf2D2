@@ -22,4 +22,19 @@ class Module
     {
         return include __DIR__ . '/config/module.config.php';
     }
+
+    public function getServiceConfig()
+    {
+
+        return array(
+            'factories' => array(
+                'Album\Model\AlbumTable' =>  function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\AlbumTable($dbAdapter);                    
+                    return $table;
+                },
+            ),
+        );
+        //echo "<pre>"; var_dump($a['factories']['Album\Model\AlbumTable']());echo "</pre>";
+    }
 }
